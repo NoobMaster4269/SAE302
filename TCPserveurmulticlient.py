@@ -43,22 +43,68 @@ def threaded_client(connection):
         data = connection.recv(2048)
         reply = '\n>>' + data.decode('utf-8') + '\n'
 
-        no = data.decode('utf-8')
-        print(no)     
-        nom = json.loads(no) 
+        Nom = data.decode('utf-8')
+        print(Nom)     
+        nom = json.loads(Nom) 
         print(nom)
 
-        if nom["Nomc"] == "1":
+        #Ajouté une promotion
+        if nom["Services"] == "1":
             cur.execute(f"INSERT INTO Promotion (NomPromo) VALUES ('{nom['NomPromo']}')")
             con.commit()
 
-        
-        
-        if nom["Nomc"] == "2":
-            cur.execute(f"INSERT INTO Etudiant (NomEtudiant) VALUES ('{nom['NomEtudiant']}'), '{nom['Promotion']}'")
+        #Ajoute un Etudiant
+        if nom["Services"] == "2":
+            cur.execute(f"INSERT INTO Etudiant (Prenom, Nom, NomPromo) VALUES ('{nom['Prenom']}','{nom['Nom']}'), '{nom['Promotion']}'")
+            con.commit()
+            #voir avec l'idPromo ?
+
+        #Ajouter une note
+        if nom["Services"] == "3":    
+            cur.execute(f"SELECT idPromo FROM Promotion WHERE NomPromo = '{nom['Promotion']}'")
+            result = cur.fetchall()
             con.commit()
 
+            cur.execute(f"INSERT INTO Notes (idPromo, NomPromo, Nom, Prenom, Note, Coef) VALUES ('{result}', '{nom['Promotion']}', '{nom['Nom']}', '{nom['Prenom']}', '{nom['Note']}', '{nom['Coef']}' )")
+            con.commit()
+        
+        #Calcul moyenne etudiant
+        if nom["Services"] == "4":
+            cur.execute(f"SELECT Note, Coef FROM Notes WHERE Prenom = '{nom["Prenom"]}'")
+            result = cur.fetchall()
+            con.commit()
 
+        #a finir
+            for i in range :
+                Num =+ result['Note']*result['Coef']
+                Den =+ result['Coef']
+                moy = Num / Den
+
+            if moy < 8 :
+                connection.send(str.encode(f"La moyenne de '{nom["Prenom"]}' est de '{moy}', Nul go redoubler"))
+            elif moy >= 8 and moy < 12: 
+                connection.send(str.encode(f"La moyenne de '{nom["Prenom"]}' est de '{moy}', Pas terrible comme la tara de tinou"))
+
+            elif moy >=12 and moy < 15:
+                connection.send(str.encode(f"La moyenne de '{nom["Prenom"]}' est de '{moy}', Très bien mais pas assez comparer a  NoobMaster le goat"))
+            elif moy >=15:
+                connection.send(str.encode(f"La moyenne de '{nom["Prenom"]}' est de '{moy}', Exylos fait mieux !")) 
+
+        #Calcul moyenne pormotion
+        if nom["Services"] == "5":
+            cur.execute(f"SELECT Note, Coef FROM Notes WHERE NomPromo = '{nom["Promotion"]}'")
+            result = cur.fetchall()
+            con.commit()
+
+            #a finir 
+            for i in range :
+                Num =+ result['Note']*result['Coef']
+                Den =+ result['Coef']
+                moy = Num / Den
+            connection.send(str.encode(f"La moyenne de la promotion '{nom["Promotion"]}' est de '{moy}'")) 
+            
+
+        
 
        # for client in clients:
         #    client.sendall(str.encode(reply))

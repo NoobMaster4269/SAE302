@@ -11,28 +11,34 @@ CREATE TABLE Promotion
 INSERT INTO Pormotion VALUES('0','rt1');
 
 
-
 DROP TABLE IF EXISTS Etudiant;
 
 CREATE TABLE Etudiant
   (idEtud	INTEGER	PRIMARY KEY AUTOINCREMENT,
-   NomPrenom	TEXT	NOT NULL,
+   Prenom TEXT NOT NULL,
+   Nom	TEXT	NOT NULL,
    NomPromo TEXT    NOT NULL,
-   FOREIGN KEY (NomPromo) REFERENCES Prpmotion (NomPromo)
+   FOREIGN KEY (NomPromo) REFERENCES Promotion (NomPromo)
+   FOREIGN KEY (idPromo) REFERENCES Promotion (idPromo)
   );
 
-INSERT INTO Etudiant VALUES('0','Noah Claudel--Ruiellet', 'rt1');
+INSERT INTO Etudiant VALUES('0', 'Noah', 'Claudel--Ruiellet', 'rt1');
 
 
-DROP TABLE IF EXISTS Notert1;
+DROP TABLE IF EXISTS Notes;
 
-CREATE TABLE Notert1
+CREATE TABLE Notes
   (idNotes	INTEGER	PRIMARY KEY,
-   idEtud   INTEGER
-   Notes	INTEGER NULL,
-   Coef	INTEGER NOT NULL,
-   FOREIGN KEY (idEtud) REFERENCES Etudiant (idEtud)
-
+   idPromo  INTEGER NOT NULL,
+   NomPromo INTEGER NOT NULL,
+   Nom  INTEGER NOT NULL,
+   Prenomom  INTEGER NOT NULL,
+   Notes	  INTEGER NULL,
+   Coef	    INTEGER NOT NULL,
+   FOREIGN KEY (idPromo) REFERENCES Promotion (idPromo),
+   FOREIGN KEY (NomPromo) REFERENCES Promotion (NomPromo),
+   FOREIGN KEY (Nom) REFERENCES Etudiant (Nom),
+   FOREIGN KEY (Prenom) REFERENCES Etudiant (Prenom)
   );
 
 COMMIT;

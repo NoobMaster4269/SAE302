@@ -16,9 +16,9 @@ def main():
     except socket.error as e:
         print(str(e))
     finally:
-        print("connected to Server !")
+        print("Connecter au Serveur !")
         myNumber = int(ClientSocket.recv(1024))
-        print("myNumber client received : ", myNumber, "\n")
+        #print("myNumber client received : ", myNumber, "\n")
         print("Choisissez un des differents services :")
         print("1. Creer une nouvelle promotion\n2. Ajouter un nouvel etudiant dans une promotion\n3. Ajouter une note (avec son coeficient) à un étudiant dans une promotion\n4. Demander le calcul de la moyenne d'un étudiant dans une promotion\n5. Demander le calcul de la moyenne d'une promotion\n")
         start_new_thread(threaded_server, (ClientSocket, myNumber))
@@ -29,18 +29,56 @@ def main():
         if msg == "1":
             print("Nom de la promontion :")
             msg2 = input('')
-            nom = {"Nomc":msg, "NomPromo": msg2}
-            no = json.dumps(nom)
-            ClientSocket.send(no.encode())
+            nom = {"Services":msg, "NomPromo": msg2}
+            Nom = json.dumps(nom)
+            ClientSocket.send(Nom.encode())
 
         if msg == "2":
-            print("Nom/Prenom :")
+            print("Prenom :")
+            print("Nom : ")
             print("Nom de la promotion : ")
+            msg1 = input('')
             msg2 = input('')
             msg3 = input('')
-            nom = {"Nomc":msg, "NomEtudiant": msg2, "Promotion": msg3}
-            no = json.dumps(nom)
-            ClientSocket.send(no.encode())
+            nom = {"Services":msg, "Prenom":msg1,"Nom": msg2, "Promotion": msg3}
+            Nom = json.dumps(nom)
+            ClientSocket.send(Nom.encode())
+
+        
+        if msg == "3":
+            print("Nom de l'etudiant :")
+            print("Prenom de l'etudiant :")
+            print("Promotion de l'etudiant :")
+            print("Note de l'étudiant: ")
+            print("Coefficiant de la note : ")
+            msg1 = input('')
+            msg2 = input('')
+            msg3 = input('')
+            msg4 = input('')
+            msg5 = input('')
+            nom = {"Services":msg, "Prenom":msg1,"Nom": msg2, "Promotion": msg3, "Note":msg4, "Coef":msg5}
+            Nom = json.dumps(nom)
+            ClientSocket.send(Nom.encode())
+
+        if msg == "4":
+            print("Prenom de l'etudiant :")
+            msg1 = input('')
+            nom = {"Services":msg, "Prenom":msg1}
+            Nom = json.dumps(nom)
+            ClientSocket.send(Nom.encode())
+
+
+        if msg == "5":
+            print("Nom de la promotion : ")
+            msg1 = input('')
+            nom = {"Services":msg, "Promotion":msg1}
+            Nom = json.dumps(nom)
+            ClientSocket.send(Nom.encode())
+
+            
+
+
+
 
 
 
