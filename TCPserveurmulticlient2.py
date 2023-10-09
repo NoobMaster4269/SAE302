@@ -110,16 +110,8 @@ def threaded_client(connection):
             cur.execute(f"INSERT INTO 'Notes{nom['Promotion']}' ('id{nom['Promotion']}', NomPromo, Nom, Prenom, Note, Coef) VALUES ('{result[0][0]}', '{nom['Promotion']}', '{nom['Nom']}', '{nom['Prenom']}', '{nom['Note']}', '{nom['Coef']}')")
             con.commit()
     
-            cur.execute(f"SELECT Note, Coef FROM 'Notes{nom['Promotion']}' WHERE Note = '{nom['Note']}' AND Coef = '{nom['Coef']}' AND Prenom = '{nom['Prenom']}' AND Nom = '{nom['Nom']}'")
-            result2 = cur.fetchall()
-            con.commit()
-
-            if len(result2 > 0):
-                connection.send(str.encode("\nLa note a  bien été ajouté"))
-                connection.send(str.encode("\nChoisissez un des differents services :\n1. Creer une nouvelle promotion\n2. Ajouter un nouvel etudiant dans une promotion\n3. Ajouter une note (avec son coeficient) à un étudiant dans une promotion\n4. Demander le calcul de la moyenne d'un étudiant dans une promotion\n5. Demander le calcul de la moyenne d'une promotion\n"))
-            else:
-                connection.send(str.encode("\nLa note n'a pas été ajouté"))
-                connection.send(str.encode("\nChoisissez un des differents services :\n1. Creer une nouvelle promotion\n2. Ajouter un nouvel etudiant dans une promotion\n3. Ajouter une note (avec son coeficient) à un étudiant dans une promotion\n4. Demander le calcul de la moyenne d'un étudiant dans une promotion\n5. Demander le calcul de la moyenne d'une promotion\n"))
+      
+                       connection.send(str.encode("\nChoisissez un des differents services :\n1. Creer une nouvelle promotion\n2. Ajouter un nouvel etudiant dans une promotion\n3. Ajouter une note (avec son coeficient) à un étudiant dans une promotion\n4. Demander le calcul de la moyenne d'un étudiant dans une promotion\n5. Demander le calcul de la moyenne d'une promotion\n"))
 
 
         #Calcul moyenne etudiant
