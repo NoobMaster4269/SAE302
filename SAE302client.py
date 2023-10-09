@@ -9,4 +9,3 @@ msg = input('')
 client.send(str.encode(msg))
 client.sendall(msg)
 client.close() 
-e
