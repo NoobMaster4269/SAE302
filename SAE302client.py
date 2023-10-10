@@ -3,6 +3,7 @@ import socket
 import os
 from _thread import *
 import json
+
 ClientSocket = None
 host = '127.0.0.1'
 port = 7001
@@ -19,62 +20,62 @@ def main():
         print("Connecter au Serveur !")
         myNumber = int(ClientSocket.recv(1024))
         #print("myNumber client received : ", myNumber, "\n")
-        print("\nChoisissez un des differents services :")
-        print("1. Creer une nouvelle promotion\n2. Ajouter un nouvel etudiant dans une promotion\n3. Ajouter une note (avec son coeficient) à un étudiant dans une promotion\n4. Demander le calcul de la moyenne d'un étudiant dans une promotion\n5. Demander le calcul de la moyenne d'une promotion\n")
+        print("\nChoisissez un des differents services : \n1. Creer une nouvelle promotion\n2. Ajouter un nouvel etudiant dans une promotion\n3. Ajouter une note (avec son coeficient) à un étudiant dans une promotion\n4. Demander le calcul de la moyenne d'un étudiant dans une promotion\n5. Demander le calcul de la moyenne d'une promotion\n6. Faire une liste d'etudiant et de leur note d'une promotion\n")
         start_new_thread(threaded_server, (ClientSocket, myNumber))
     while True:
         msg = input('') # bloquant les retours => nécessite un thread
 
         if msg == "1":
-            print("Nom de la promotion :")
-            msg2 = input('')
+            msg2 = input('Nom de la promotion : ')
             nom = {"Services":msg, "Promotion": msg2}
             Nom = json.dumps(nom)
             ClientSocket.send(Nom.encode())
 
         if msg == "2":
-            print("Prenom :")
-            print("Nom : ")
-            print("Nom de la promotion : ")
-            msg1 = input('')
-            msg2 = input('')
-            msg3 = input('')
+            msg1 = input('Prenom : ')
+            msg2 = input('Nom : ')
+            msg3 = input('Nom de la promotion : ')
             nom = {"Services":msg, "Prenom":msg1,"Nom": msg2, "Promotion": msg3}
             Nom = json.dumps(nom)
             ClientSocket.send(Nom.encode())
 
         if msg == "3":
-            print("Prenom de l'etudiant :")
-            print("Nom de l'etudiant :")
-            print("Promotion de l'etudiant :")
-            print("Note de l'étudiant: ")
-            print("Coefficiant de la note : ")
-            msg1 = input('')
-            msg2 = input('')
-            msg3 = input('')
-            msg4 = input('')
-            msg5 = input('')
+            msg1 = input('Prenom de l\'etudiant : ')
+            msg2 = input('Nom de l\'etudiant : ')
+            msg3 = input('Promotion de l\'etudiant : ')
+            msg4 = input('Note de l\'étudiant: ')
+            msg5 = input('Coefficiant de la note : ')
             nom = {"Services":msg, "Prenom":msg1, "Nom": msg2, "Promotion": msg3, "Note":msg4, "Coef":msg5}
             Nom = json.dumps(nom)
             ClientSocket.send(Nom.encode())
 
         if msg == "4":
-            print("Prenom de l'etudiant :")
-            print("Promotion de l'etudiant :")
-            msg1 = input('')
-            msg2 = input('')
-            nom = {"Services":msg, "Prenom":msg1, "Promotion":msg2}
+            msg1 = input('Prenom de l\'etudiant : ')
+            msg2 = input('Nom de l\'etudiant : ')
+            msg3 = input('Promotion de l\'etudiant :')
+            nom = {"Services":msg, "Prenom":msg1, "Nom":msg2, "Promotion":msg3}
             Nom = json.dumps(nom)
             ClientSocket.send(Nom.encode())
 
-        if msg == "6":
-            print("Nom de la promotion : ")
-            msg1 = input('')
+        if msg == "5":
+            msg1 = input('Nom de la promotion : ')
             nom = {"Services":msg, "Promotion":msg1}
             Nom = json.dumps(nom)
             ClientSocket.send(Nom.encode())
 
+        if msg == "6":
+            msg1 = input('Nom de la promotion : ')
+            nom = {"Services":msg, "Promotion":msg1}
+            Nom = json.dumps(nom)
+            ClientSocket.send(Nom.encode())
 
+            data = ClientSocket.recv(1024)
+            lis = data.decode('utf-8') + '\n'
+            liste = json.loads(lis)
+
+            for i in range (len(liste)):
+                print(f"{liste['Nom']} {liste['Prenom']}, Note : {liste['Note']}, Coef : {liste['Coef']} ")
+            
         
 
             #ClientSocket.send(str.encode(msg))
@@ -87,7 +88,7 @@ def main():
 def threaded_server(connection, num):
     while True:
         response = connection.recv(1024)
-        print(response.decode('utf-8'))
+        #print(response.decode('utf-8'))
 
 if __name__== "__main__":
     main()

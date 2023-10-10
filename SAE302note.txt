@@ -1,0 +1,27 @@
+dumps convertit un dictionnaire en liste de caractaires au format json
+loads liste de caractère en dictionnaires
+ 
+global nbclients indique que c'est une globale qui peut être utiliser en dehors ou dans une fonction
+
+bind sert à associer un socket à une adresse ip et un numèro de port.
+Elle indique sur quelles interfaces réseau et ports le socket doit écouter les connexions entrantes.
+
+ServerSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM) 
+AF_INET -> ipv4
+SOCK_STREAM = type de socket -> tcp
+
+ServerSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+SO_REUSEADDR -> permet au serveur d'utiliser une @IP et un port même si ces derniers ont été utilisés récemment par un autre socket
+si on ferme le socket on peut réutiliser la meme @IP et port !
+ 
+
+try execpt finally 
+gérer les exceptions (erreurs) et garantir l'exécution de certaines actions, que des erreurs se produisent ou non.
+execpt affiche l'erreur si laconnexion dans le try echoue finnaly affichera toujour le message
+
+client, address = ServerSocket.accept()
+Cette ligne accepte une connexion entrante d'un client et retourne un objet client qui représente la connexion avec ce client, ainsi que l'adresse IP et le port du client dans le tuple address
+
+break casse la boule while true
+pop supprime ??
+
