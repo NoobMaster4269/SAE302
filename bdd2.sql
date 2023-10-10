@@ -24,7 +24,7 @@ CREATE TABLE Notesrt1
    Note	  INTEGER NULL,
    Coef	    INTEGER NULL,
    FOREIGN KEY (idrt1) REFERENCES rt1 (idrt1),
-      FOREIGN KEY (NomPromo) REFERENCES rt1 (NomPromo),
+   FOREIGN KEY (NomPromo) REFERENCES rt1 (NomPromo),
    FOREIGN KEY (Nom) REFERENCES rt1 (Nom),
    FOREIGN KEY (Prenom) REFERENCES rt1 (Prenom)
   );
