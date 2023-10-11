@@ -68,7 +68,7 @@ def threaded_client(connection):
                 cur.execute(f"DROP TABLE IF EXISTS 'Notes{nom['Promotion']}';")
                 con.commit()
 
-                cur.execute(f"CREATE TABLE 'Notes{nom['Promotion']}' ('idNote{nom['Promotion']}' INTEGER PRIMARY KEY AUTOINCREMENT, 'id{nom['Promotion']}' INTEGER NOT NULL, NomPromo TEXT NOT NULL, Nom TEXT NOT NULL, Prenom TEXT NOT NULL, Note INTEGER NULL, Coef INTEGER NULL, FOREIGN KEY ('id{nom['Promotion']}') REFERENCES '{nom['Promotion']}' ('id{nom['Promotion']}'), FOREIGN KEY (NomPromo) REFERENCES '{nom['Promotion']}' (NomPromo), FOREIGN KEY (Nom) REFERENCES '{nom['Promotion']}' (Nom), FOREIGN KEY (Prenom) REFERENCES '{nom['Promotion']}' (Prenom)); ")
+                cur.execute(f"CREATE TABLE 'Notes{nom['Promotion']}' ('idNote{nom['Promotion']}' INTEGER PRIMARY KEY AUTOINCREMENT, 'id{nom['Promotion']}' INTEGER NOT NULL, Note INTEGER NULL, Coef INTEGER NULL, FOREIGN KEY ('id{nom['Promotion']}') REFERENCES '{nom['Promotion']}' ('id{nom['Promotion']}')); ")
                 con.commit()
           
                 cur.execute(f"SELECT name FROM sqlite_master WHERE type = 'table' AND name = '{nom['Promotion']}'")
@@ -116,11 +116,11 @@ def threaded_client(connection):
                         cur.execute(f"SELECT Prenom, Nom FROM '{nom['Promotion']}' WHERE NomPromo = '{nom['Promotion']}' AND Prenom = '{nom['Prenom']}' AND Nom = '{nom['Nom']}'")
                         result2 = cur.fetchall()
 
-                        if len(result2) > 0 and result2[0][0] == nom['Prenom'] and result2[0][1] == nom['Nom']:
+                        if len(result2) > 0:
                             cur.execute(f"SELECT * FROM '{nom['Promotion']}' WHERE NomPromo = '{nom['Promotion']}' AND Prenom = '{nom['Prenom']}' AND Nom = '{nom['Nom']}'")
                             result3 = cur.fetchall()
                     
-                            cur.execute(f"INSERT INTO 'Notes{nom['Promotion']}' ('id{nom['Promotion']}', NomPromo, Nom, Prenom, Note, Coef) VALUES ('{result3[0][0]}', '{nom['Promotion']}', '{nom['Nom']}', '{nom['Prenom']}', '{nom['Note']}', '{nom['Coef']}')")
+                            cur.execute(f"INSERT INTO 'Notes{nom['Promotion']}' ('id{nom['Promotion']}', Note, Coef) VALUES ('{result3[0][0]}', '{nom['Note']}', '{nom['Coef']}')")
                             con.commit()
                             connection.send(str.encode(Services))
                         else:
@@ -137,17 +137,17 @@ def threaded_client(connection):
             result = cur.fetchall()
             
             if len(result) > 0 and result[0][0] == nom['Promotion']:
-                cur.execute(f"SELECT Prenom, Nom FROM '{nom['Promotion']}' WHERE NomPromo = '{nom['Promotion']}' AND Prenom = '{nom['Prenom']}' AND Nom = '{nom['Nom']}'")
+                cur.execute(f"SELECT 'id{nom['Promotion']}' FROM '{nom['Promotion']}' WHERE NomPromo = '{nom['Promotion']}' AND Prenom = '{nom['Prenom']}' AND Nom = '{nom['Nom']}'")
                 result2 = cur.fetchall()
 
-                if len(result2) > 0 and result2[0][0] == nom['Prenom'] and result2[0][1] == nom['Nom']:         
-                    cur.execute(f"SELECT Note, Coef FROM 'Notes{nom['Promotion']}' WHERE Prenom = '{nom['Prenom']}' AND Nom = '{nom['Nom']}'")
+                if len(result2) > 0:         
+                    cur.execute(f"SELECT Note, Coef FROM 'Notes{nom['Promotion']}' WHERE 'id{nom['Promotion']}' = '{result2[0][0]}'")
                     result3 = cur.fetchall()
                     
-                    if  len(result3) > 0 and result3[0][0] == nom['Note'] and result3[0][1] == nom['Coef']:
+                    if  len(result3) > 0:
                         Num = 0 
                         Den = 0
-                        for i in result2:
+                        for i in result3:
                             Num += i[0] * i[1]
                             Den += i[1]
                             moy = Num / Den
@@ -178,19 +178,22 @@ def threaded_client(connection):
                 connection.send(str.encode(Services))           
                                
 
-        #Calcul moyenne pormotion
+        #Calcul moyenne promotion
         if nom["Services"] == "5":
             cur.execute(f"SELECT name FROM sqlite_master WHERE type = 'table' AND name = '{nom['Promotion']}'")
             result = cur.fetchall()
             
-            if len(result) > 0 and result[0][0] == nom['Promotion']:
-                cur.execute(f"SELECT Note, Coef FROM 'Notes{nom['Promotion']}' WHERE NomPromo = '{nom['Promotion']}'")
+            if len(result) > 0 :
+                cur.execute(f"SELECT 'id{nom['Promotion']}' FROM '{nom['Promotion']}' WHERE NomPromo = '{nom['Promotion']}'")
                 result2 = cur.fetchall()
+
+                cur.execute(f"SELECT Note, Coef FROM 'Notes{nom['Promotion']}' WHERE 'id{nom['Promotion']}' = '{result2[0][0]}' ")
+                result3 = cur.fetchall()
                 
-                if len(result2) > 0 and result2[0][0] == nom['Note'] and result2[0][1] == nom['Coef']:
+                if len(result3) > 0 :
                     Num = 0 
                     Den = 0
-                    for i in  result2:
+                    for i in  result3:
                         Num += i[0] * i[1]
                         Den += i[1]
                         moy = Num / Den
@@ -203,8 +206,29 @@ def threaded_client(connection):
                     connection.send(str.encode(Services))
             else:
                 connection.send(str.encode("\nLa promotion n'existe pas"))
-                connection.send(str.encode(Services))           
-                                    
+                connection.send(str.encode(Services))
+
+        if nom["Services"] == "6":
+            cur.execute(f"SELECT name FROM sqlite_master WHERE type = 'table' AND name = '{nom['Promotion']}'")
+            result = cur.fetchall()
+            
+            if len(result) > 0 :
+                cur.execute(f"SELECT * FROM '{nom['Promotion']}' WHERE NomPromo = '{nom['Promotion']}'")
+                result2 = cur.fetchall()
+
+                for k in range(len(result2)):
+                    cur.execute(f"SELECT Note, Coef FROM 'Notes{nom['Promotion']}' WHERE 'id{nom['Promotion']}' = '{result[k][0]}'")
+                    result3 = cur.fetchall()
+                    eleve = []
+                    for i in range(len(result3)):
+                        eleve.append([result3[i][0], result3[i][1]])
+                    connection.send(str.encode(f"\n{result2[k][1]} {result2[k][2]} : {eleve}, "))
+                    connection.send(str.encode(Services))           
+
+            else:
+                connection.send(str.encode("\nLa promotion n'existe pas"))
+                connection.send(str.encode(Services))
+
         
        # for client in clients:
         #    client.sendall(str.encode(reply))

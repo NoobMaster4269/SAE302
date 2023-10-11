@@ -63,8 +63,15 @@ def main():
             Nom = json.dumps(nom)
             ClientSocket.send(Nom.encode())
 
+        if msg == "6":
+            msg1 = input('Nom de la promotion : ')
+            nom = {"Services":msg, "Promotion":msg1}
+            Nom = json.dumps(nom)
+            ClientSocket.send(Nom.encode())
+
+
  
-            #ClientSocket.send(str.encode(msg))
+            
 
         if msg == "quitter": # Bogue sur le quit !
             ClientSocket.send(str.encode(str(myNumber)))
