@@ -6,7 +6,7 @@ import json
 
 ClientSocket = None
 host = '127.0.0.1'
-port = 7001
+port = 4500
 myNumber = 0
 
 def main():
@@ -63,21 +63,7 @@ def main():
             Nom = json.dumps(nom)
             ClientSocket.send(Nom.encode())
 
-        if msg == "6":
-            msg1 = input('Nom de la promotion : ')
-            nom = {"Services":msg, "Promotion":msg1}
-            Nom = json.dumps(nom)
-            ClientSocket.send(Nom.encode())
-
-            data = ClientSocket.recv(1024)
-            lis = data.decode('utf-8') + '\n'
-            liste = json.loads(lis)
-
-            for i in range (len(liste)):
-                print(f"{liste['Nom']} {liste['Prenom']}, Note : {liste['Note']}, Coef : {liste['Coef']} ")
-            
-        
-
+ 
             #ClientSocket.send(str.encode(msg))
 
         if msg == "quitter": # Bogue sur le quit !
@@ -88,7 +74,7 @@ def main():
 def threaded_server(connection, num):
     while True:
         response = connection.recv(1024)
-        #print(response.decode('utf-8'))
+        print(response.decode('utf-8'))
 
 if __name__== "__main__":
     main()

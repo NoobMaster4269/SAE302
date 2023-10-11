@@ -8,7 +8,7 @@ import sqlite3
 
 ServerSocket = None
 host = '127.0.0.1'
-port = 7001
+port = 4500
 clients = []
 nbclients = 0
 numclient = None
@@ -73,10 +73,10 @@ def threaded_client(connection):
           
                 cur.execute(f"SELECT name FROM sqlite_master WHERE type = 'table' AND name = '{nom['Promotion']}'")
                 result2 = cur.fetchall()
-                con.commit()
+                
 
 
-                if len(result2) > 0 and result2 == nom['Promotion']:
+                if len(result2) > 0 and result2[0][0] == nom['Promotion']:
                     connection.send(str.encode("\nLa nouvelle promotion a bien été créée"))
                     connection.send(str.encode(Services))
                 else:
@@ -204,32 +204,12 @@ def threaded_client(connection):
             else:
                 connection.send(str.encode("\nLa promotion n'existe pas"))
                 connection.send(str.encode(Services))           
-                               
-        #Liste etudiant et note d'une promotion
-        if nom["Services"] == "6":
-            cur.execute(f"SELECT name FROM sqlite_master WHERE type = 'table' AND name = '{nom['Promotion']}'")
-            result = cur.fetchall()
-            
-            if len(result) > 0 and result[0][0] == nom['Promotion']: 
-                cur.execute(f"SELECT Prenom, Nom, Note, Coef FROM 'Notes{nom['Promotion']}' WHERE NomPromo = '{nom['Promotion']}'")
-                result = cur.fetchall()
-
-                for i in range (len(result)):
-                    if liste:
-                        liste = {"Prenom":result[i][0], "Nom":result[i][1], "Note":result[i][2], "Coef":result[i][3]}
-                        lis = json.dumps(liste)
-                    connection.send(str.encode(lis))
-                
-                connection.send(str.encode(Services))
-
-            else:
-                connection.send(str.encode("\nLa promotion n'existe pas"))
-                connection.send(str.encode(Services))           
+                                    
         
        # for client in clients:
         #    client.sendall(str.encode(reply))
         if data.decode('utf-8') == "quitter": # Bogue sur le quit !
-            numclisent = int(connection.recv(2048))
+            numclient = int(connection.recv(2048))
             clients[numclient].close()
             clients.pop(numclient)
             nbclients-=1
